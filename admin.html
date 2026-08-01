@@ -106,6 +106,12 @@ body{font-family:'Inter',sans-serif;background:var(--cream);color:var(--text);mi
 
 .locked-msg{text-align:center;padding:50px 20px;color:var(--text-soft);}
 .locked-msg .big{font-size:44px;display:block;margin-bottom:12px;}
+
+.translate-bar{display:flex;align-items:center;justify-content:space-between;gap:10px;background:linear-gradient(135deg,#FFF8E7,#FEF3D9);border:1.5px solid var(--gold-light);border-radius:10px;padding:10px 12px;margin-bottom:14px;flex-wrap:wrap;}
+.translate-bar .hint{margin:0;color:var(--text-soft);font-size:11.5px;}
+.translate-btn{background:var(--gold);color:var(--dark);border:none;border-radius:8px;padding:8px 14px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;transition:.15s;}
+.translate-btn:hover{background:var(--dark);color:#fff;}
+.translate-btn:disabled{opacity:.5;cursor:not-allowed;}
 </style>
 </head>
 <body>
@@ -182,6 +188,11 @@ body{font-family:'Inter',sans-serif;background:var(--cream);color:var(--text);mi
           </select>
         </div>
 
+        <div class="translate-bar">
+          <span class="hint">✍️ Bitta tilda kiriting, keyin bosing:</span>
+          <button type="button" class="translate-btn" onclick="autoTranslateAll()" id="translateAllBtn">🌐 Qolgan 3 tilga tarjima qilish</button>
+        </div>
+
         <div class="form-row">
           <div class="field">
             <label>🇸🇦 Nomi (Arab)</label>
@@ -210,6 +221,11 @@ body{font-family:'Inter',sans-serif;background:var(--cream);color:var(--text);mi
             <label>😊 Emoji (rasm bo'lmasa)</label>
             <input id="fEmoji" placeholder="🍖" maxlength="4">
           </div>
+        </div>
+
+        <div class="translate-bar">
+          <span class="hint">✍️ Tavsifni bitta tilda yozing, keyin bosing:</span>
+          <button type="button" class="translate-btn" onclick="autoTranslateDesc()" id="translateDescBtn">🌐 Tavsifni tarjima qilish</button>
         </div>
 
         <div class="form-row">
@@ -682,6 +698,77 @@ async function saveWaNumber() {
   } catch(e) {
     showToast('Xato: ' + e.message, 'error');
   }
+}
+
+// ===== AUTO TRANSLATE =====
+const LANG_CODES = { ar:'ar', en:'en', uz:'uz', ru:'ru' };
+
+async function translateText(text, targetLang, sourceLang='auto') {
+  if (!text || !text.trim()) return '';
+  const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${sourceLang}&tl=${targetLang}&dt=t&q=${encodeURIComponent(text)}`;
+  const res = await fetch(url);
+  if (!res.ok) throw new Error('Tarjima xizmati javob bermadi');
+  const data = await res.json();
+  return data[0].map(part => part[0]).join('');
+}
+
+function detectFilledLang(fields) {
+  // fields = {ar:'fNameAr', en:'fNameEn', uz:'fNameUz', ru:'fNameRu'}
+  for (const [lang, id] of Object.entries(fields)) {
+    const val = document.getElementById(id).value.trim();
+    if (val) return { lang, text: val };
+  }
+  return null;
+}
+
+async function autoTranslateAll() {
+  const fields = { ar:'fNameAr', en:'fNameEn', uz:'fNameUz', ru:'fNameRu' };
+  const source = detectFilledLang(fields);
+  if (!source) { showToast('Avval kamida bitta tilda nom kiriting', 'error'); return; }
+
+  const btn = document.getElementById('translateAllBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Tarjima qilinmoqda...';
+
+  try {
+    const targets = Object.keys(fields).filter(l => l !== source.lang);
+    for (const lang of targets) {
+      const el = document.getElementById(fields[lang]);
+      if (el.value.trim()) continue; // already filled by user, don't overwrite
+      const translated = await translateText(source.text, LANG_CODES[lang], LANG_CODES[source.lang]);
+      el.value = translated;
+    }
+    showToast('Nom barcha tillarga tarjima qilindi! ✅', 'success');
+  } catch(e) {
+    showToast('Tarjima xatosi: ' + e.message, 'error');
+  }
+  btn.disabled = false;
+  btn.innerHTML = '🌐 Qolgan 3 tilga tarjima qilish';
+}
+
+async function autoTranslateDesc() {
+  const fields = { ar:'fDescAr', en:'fDescEn', uz:'fDescUz', ru:'fDescRu' };
+  const source = detectFilledLang(fields);
+  if (!source) { showToast('Avval kamida bitta tilda tavsif kiriting', 'error'); return; }
+
+  const btn = document.getElementById('translateDescBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Tarjima qilinmoqda...';
+
+  try {
+    const targets = Object.keys(fields).filter(l => l !== source.lang);
+    for (const lang of targets) {
+      const el = document.getElementById(fields[lang]);
+      if (el.value.trim()) continue;
+      const translated = await translateText(source.text, LANG_CODES[lang], LANG_CODES[source.lang]);
+      el.value = translated;
+    }
+    showToast('Tavsif barcha tillarga tarjima qilindi! ✅', 'success');
+  } catch(e) {
+    showToast('Tarjima xatosi: ' + e.message, 'error');
+  }
+  btn.disabled = false;
+  btn.innerHTML = '🌐 Tavsifni tarjima qilish';
 }
 
 function copySiteUrl() {
