@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="uz" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AsSafa Admin | Menu boshqaruvi</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Naskh+Arabic:wght@600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --gold:#C9962A;--gold-light:#F0C958;--dark:#1A1208;--dark2:#2C1F0A;
+  --cream:#FDF6E3;--cream2:#F5EDD0;--text:#1A1208;--text-soft:#6B5B35;
+  --green:#1F8A4C;--red:#C0392B;--white:#fff;
+  --shadow:0 4px 20px rgba(26,18,8,.08);--radius:16px;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Inter',sans-serif;background:var(--cream);color:var(--text);min-height:100vh;padding-bottom:40px;}
+
+.topbar{background:linear-gradient(135deg,var(--dark),var(--dark2));color:#fff;padding:18px 20px;position:sticky;top:0;z-index:50;box-shadow:0 2px 16px rgba(0,0,0,.25);}
+.topbar-inner{max-width:900px;margin:0 auto;display:flex;align-items:center;gap:12px;}
+.topbar-icon{width:38px;height:38px;background:linear-gradient(135deg,var(--gold),var(--gold-light));border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.topbar h1{font-size:16px;font-weight:700;color:var(--gold-light);}
+.topbar p{font-size:11px;color:rgba(255,255,255,.55);}
+
+.container{max-width:900px;margin:0 auto;padding:20px 16px;}
+
+/* SETUP CARD */
+.setup-card{background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);padding:20px;margin-bottom:20px;border:1.5px solid var(--cream2);}
+.setup-card.connected{border-color:var(--green);}
+.setup-title{font-size:14px;font-weight:700;margin-bottom:4px;display:flex;align-items:center;gap:8px;}
+.setup-sub{font-size:12px;color:var(--text-soft);margin-bottom:14px;line-height:1.5;}
+.setup-sub a{color:var(--gold);font-weight:600;}
+.token-row{display:flex;gap:8px;}
+.token-input{flex:1;padding:11px 14px;border:1.5px solid var(--cream2);border-radius:10px;font-size:13px;font-family:monospace;outline:none;}
+.token-input:focus{border-color:var(--gold);}
+.connect-btn{background:var(--dark);color:#fff;border:none;border-radius:10px;padding:0 20px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;}
+.connect-btn:hover{background:var(--gold);color:var(--dark);}
+.status-badge{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:var(--green);}
+.status-dot{width:8px;height:8px;border-radius:50%;background:var(--green);}
+.status-dot.off{background:#ccc;}
+
+/* TABS */
+.tabs{display:flex;gap:8px;margin-bottom:18px;background:#fff;padding:5px;border-radius:12px;box-shadow:var(--shadow);}
+.tab{flex:1;text-align:center;padding:10px;border-radius:9px;font-size:13px;font-weight:600;cursor:pointer;color:var(--text-soft);transition:.2s;}
+.tab.active{background:var(--dark);color:#fff;}
+
+/* SECTIONS */
+.section{display:none;}
+.section.active{display:block;}
+
+/* CARD */
+.card{background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);padding:20px;margin-bottom:16px;}
+.card h2{font-size:15px;font-weight:700;margin-bottom:16px;display:flex;align-items:center;gap:8px;}
+
+/* FORM */
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;}
+@media(max-width:520px){.form-row{grid-template-columns:1fr;}}
+.field{margin-bottom:12px;}
+.field label{font-size:11px;font-weight:700;color:var(--text-soft);text-transform:uppercase;letter-spacing:.4px;margin-bottom:6px;display:block;}
+.field input,.field select,.field textarea{width:100%;padding:11px 13px;border:1.5px solid var(--cream2);border-radius:10px;font-size:13.5px;font-family:inherit;outline:none;transition:border .15s;background:#fff;}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--gold);}
+.field textarea{resize:vertical;min-height:44px;}
+.hint{font-size:11px;color:#999;margin-top:4px;}
+
+/* IMAGE UPLOAD */
+.img-drop{border:2px dashed var(--cream2);border-radius:12px;padding:18px;text-align:center;cursor:pointer;transition:.2s;position:relative;overflow:hidden;background:var(--cream);}
+.img-drop:hover{border-color:var(--gold);background:#fffaf0;}
+.img-drop.has-img{padding:0;border-style:solid;}
+.img-drop input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;}
+.img-drop-placeholder{font-size:12px;color:var(--text-soft);}
+.img-drop-placeholder .big{font-size:26px;display:block;margin-bottom:6px;}
+.img-preview{width:100%;max-height:220px;object-fit:cover;display:block;}
+.img-remove{position:absolute;top:8px;right:8px;background:rgba(0,0,0,.6);color:#fff;border:none;width:26px;height:26px;border-radius:50%;cursor:pointer;font-size:13px;z-index:2;}
+
+.btn-primary{background:linear-gradient(135deg,var(--dark),var(--dark2));color:#fff;border:none;border-radius:12px;padding:13px;font-size:14px;font-weight:700;cursor:pointer;width:100%;margin-top:6px;transition:opacity .15s;}
+.btn-primary:hover{opacity:.9;}
+.btn-primary:disabled{opacity:.4;cursor:not-allowed;}
+.btn-secondary{background:var(--cream2);color:var(--text);border:none;border-radius:10px;padding:11px;font-size:13px;font-weight:600;cursor:pointer;}
+
+/* MENU LIST */
+.menu-item{display:flex;gap:12px;align-items:center;padding:12px;border:1px solid var(--cream2);border-radius:12px;margin-bottom:10px;}
+.menu-item img{width:56px;height:56px;border-radius:10px;object-fit:cover;background:var(--cream2);flex-shrink:0;}
+.menu-item .ph{width:56px;height:56px;border-radius:10px;background:var(--cream2);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
+.mi-info{flex:1;min-width:0;}
+.mi-name{font-size:13.5px;font-weight:700;}
+.mi-meta{font-size:11.5px;color:var(--text-soft);margin-top:2px;}
+.mi-price{font-size:13px;font-weight:700;color:var(--gold);white-space:nowrap;}
+.mi-actions{display:flex;gap:6px;flex-shrink:0;}
+.icon-btn{background:var(--cream2);border:none;border-radius:8px;width:32px;height:32px;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;}
+.icon-btn.danger{background:#FDECEA;color:var(--red);}
+
+/* WA SETTINGS */
+.wa-row{display:flex;gap:10px;align-items:center;}
+.wa-row input{flex:1;}
+
+/* TOAST */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(100px);background:var(--dark);color:#fff;padding:13px 22px;border-radius:12px;font-size:13px;font-weight:600;box-shadow:0 8px 24px rgba(0,0,0,.3);z-index:999;transition:transform .3s ease;display:flex;align-items:center;gap:8px;}
+.toast.show{transform:translateX(-50%) translateY(0);}
+.toast.error{background:var(--red);}
+.toast.success{background:var(--green);}
+
+.empty-state{text-align:center;padding:40px 20px;color:var(--text-soft);}
+.empty-state .big{font-size:40px;display:block;margin-bottom:10px;}
+
+.spinner{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+.locked-msg{text-align:center;padding:50px 20px;color:var(--text-soft);}
+.locked-msg .big{font-size:44px;display:block;margin-bottom:12px;}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="topbar-icon">🍽️</div>
+    <div>
+      <h1>AsSafa Admin</h1>
+      <p>Menu va rasmlarni boshqarish paneli</p>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- SETUP / CONNECTION -->
+  <div class="setup-card" id="setupCard">
+    <div class="setup-title">🔑 <span id="setupTitle">GitHub ulanishi</span></div>
+    <div class="setup-sub" id="setupSub">
+      Bu panel to'g'ridan GitHub repositoryingizga saqlaydi. Token faqat shu brauzerda saqlanadi (hech kimga yuborilmaydi).<br>
+      Token yo'q bo'lsa: <a href="https://github.com/settings/tokens/new?scopes=repo&description=AsSafa%20Admin" target="_blank">shu yerda yarating</a> → "repo" belgisini qo'ying → nusxa oling.
+    </div>
+    <div class="token-row">
+      <input type="password" class="token-input" id="ghToken" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx">
+      <button class="connect-btn" id="connectBtn" onclick="connectGitHub()">Ulash</button>
+    </div>
+    <div id="connStatus" style="margin-top:10px;display:none;"></div>
+  </div>
+
+  <div id="lockedArea" style="display:none;">
+    <div class="card">
+      <div class="locked-msg">
+        <span class="big">🔒</span>
+        Davom etish uchun avval GitHub tokeningizni kiriting.
+      </div>
+    </div>
+  </div>
+
+  <div id="mainArea" style="display:none;">
+    <!-- TABS -->
+    <div class="tabs">
+      <div class="tab active" data-tab="add" onclick="showTab('add')">➕ Taom qo'shish</div>
+      <div class="tab" data-tab="list" onclick="showTab('list')">📋 Menu (<span id="itemCount">0</span>)</div>
+      <div class="tab" data-tab="settings" onclick="showTab('settings')">⚙️ Sozlamalar</div>
+    </div>
+
+    <!-- ADD TAB -->
+    <div class="section active" id="tab-add">
+      <div class="card">
+        <h2 id="formTitle">🍽️ Yangi taom</h2>
+
+        <div class="field">
+          <label>📸 Taom rasmi</label>
+          <div class="img-drop" id="imgDrop">
+            <input type="file" id="imgFile" accept="image/*" onchange="handleImageUpload(event)">
+            <div class="img-drop-placeholder" id="imgPlaceholder">
+              <span class="big">📷</span>
+              Rasmni bosing yoki shu yerga tashlang<br>
+              <span class="hint">JPG/PNG, avtomatik siqiladi</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>🌐 Kategoriya</label>
+          <select id="fCategory">
+            <option value="main">🍖 Asosiy taomlar</option>
+            <option value="soups">🍲 Sho'rvalar</option>
+            <option value="salads">🥗 Salatlar</option>
+            <option value="bread">🫓 Non</option>
+            <option value="drinks">🥤 Ichimliklar</option>
+            <option value="desserts">🍮 Shirinliklar</option>
+          </select>
+        </div>
+
+        <div class="form-row">
+          <div class="field">
+            <label>🇸🇦 Nomi (Arab)</label>
+            <input id="fNameAr" placeholder="اسم الطبق" dir="rtl">
+          </div>
+          <div class="field">
+            <label>🇬🇧 Nomi (Ingliz)</label>
+            <input id="fNameEn" placeholder="Dish name">
+          </div>
+          <div class="field">
+            <label>🇺🇿 Nomi (O'zbek)</label>
+            <input id="fNameUz" placeholder="Taom nomi">
+          </div>
+          <div class="field">
+            <label>🇷🇺 Nomi (Rus)</label>
+            <input id="fNameRu" placeholder="Название">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="field">
+            <label>💰 Narx (SAR)</label>
+            <input id="fPrice" type="number" min="0" step="0.5" placeholder="0">
+          </div>
+          <div class="field">
+            <label>😊 Emoji (rasm bo'lmasa)</label>
+            <input id="fEmoji" placeholder="🍖" maxlength="4">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="field">
+            <label>🇸🇦 Tavsif (Arab)</label>
+            <input id="fDescAr" placeholder="وصف قصير" dir="rtl">
+          </div>
+          <div class="field">
+            <label>🇬🇧 Tavsif (Ingliz)</label>
+            <input id="fDescEn" placeholder="Short description">
+          </div>
+          <div class="field">
+            <label>🇺🇿 Tavsif (O'zbek)</label>
+            <input id="fDescUz" placeholder="Qisqa tavsif">
+          </div>
+          <div class="field">
+            <label>🇷🇺 Tavsif (Rus)</label>
+            <input id="fDescRu" placeholder="Краткое описание">
+          </div>
+        </div>
+
+        <button class="btn-primary" id="saveBtn" onclick="saveItem()">✅ Menyuga saqlash</button>
+        <button class="btn-secondary" style="width:100%;margin-top:8px;display:none" id="cancelEditBtn" onclick="cancelEdit()">Bekor qilish</button>
+      </div>
+    </div>
+
+    <!-- LIST TAB -->
+    <div class="section" id="tab-list">
+      <div class="card">
+        <h2>📋 Barcha taomlar</h2>
+        <div id="menuList"></div>
+      </div>
+    </div>
+
+    <!-- SETTINGS TAB -->
+    <div class="section" id="tab-settings">
+      <div class="card">
+        <h2>📱 WhatsApp raqami</h2>
+        <div class="field">
+          <label>Zakazlar shu raqamga keladi</label>
+          <div class="wa-row">
+            <input id="fWaNumber" placeholder="966XXXXXXXXX">
+            <button class="connect-btn" onclick="saveWaNumber()">Saqlash</button>
+          </div>
+          <div class="hint">Mamlakat kodi bilan, + belgisisiz. Masalan: 966566867711</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>🔗 Sayt havolasi</h2>
+        <div class="field">
+          <label>Mijozlar uchun menu linki</label>
+          <div class="wa-row">
+            <input id="siteUrl" readonly value="https://sayfulloh11.github.io/assafa-menu/">
+            <button class="connect-btn" onclick="copySiteUrl()">Nusxalash</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>🔒 Ulanishni uzish</h2>
+        <div class="hint" style="margin-bottom:10px">Tokenni shu brauzerdan o'chirish (boshqa hech narsaga ta'sir qilmaydi)</div>
+        <button class="btn-secondary" style="width:100%" onclick="disconnectGitHub()">GitHub tokenini o'chirish</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const OWNER = "sayfulloh11";
+const REPO = "assafa-menu";
+const BRANCH = "main";
+const GH_API = `https://api.github.com/repos/${OWNER}/${REPO}`;
+const GH_RAW = `https://raw.githubusercontent.com/${OWNER}/${REPO}/${BRANCH}/images/`;
+
+let token = localStorage.getItem('gh_token') || '';
+let MENU = [];
+let menuSha = '';
+let editingId = null;
+let pendingImageFile = null; // {name, base64}
+let waNumber = '';
+
+const CATS = {
+  main:{ar:"الأطباق الرئيسية",en:"Main Dishes",uz:"Asosiy taomlar",ru:"Главные блюда",emoji:"🍖"},
+  soups:{ar:"الشوربات",en:"Soups",uz:"Sho'rvalar",ru:"Супы",emoji:"🍲"},
+  salads:{ar:"السلطات",en:"Salads",uz:"Salatlar",ru:"Салаты",emoji:"🥗"},
+  bread:{ar:"الخبز",en:"Bread",uz:"Non",ru:"Хлеб",emoji:"🫓"},
+  drinks:{ar:"المشروبات",en:"Drinks",uz:"Ichimliklar",ru:"Напитки",emoji:"🥤"},
+  desserts:{ar:"الحلويات",en:"Desserts",uz:"Shirinliklar",ru:"Десерты",emoji:"🍮"}
+};
+
+function showToast(msg, type='') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show' + (type ? ' '+type : '');
+  setTimeout(()=>{ t.className='toast'; }, 3000);
+}
+
+async function ghFetch(path, opts={}) {
+  const res = await fetch(`${GH_API}${path}`, {
+    ...opts,
+    headers: {
+      'Authorization': `token ${token}`,
+      'Accept': 'application/vnd.github.v3+json',
+      ...(opts.headers||{})
+    }
+  });
+  return res;
+}
+
+async function connectGitHub() {
+  const input = document.getElementById('ghToken').value.trim();
+  if (!input) { showToast('Token kiriting', 'error'); return; }
+  const btn = document.getElementById('connectBtn');
+  btn.innerHTML = '<span class="spinner"></span>';
+  token = input;
+
+  try {
+    const res = await ghFetch('');
+    if (!res.ok) throw new Error('Token noto\'g\'ri yoki repo topilmadi (' + res.status + ')');
+    localStorage.setItem('gh_token', token);
+    showToast('Muvaffaqiyatli ulandi! ✅', 'success');
+    await initApp();
+  } catch(e) {
+    showToast('Xato: ' + e.message, 'error');
+    token = '';
+  }
+  btn.innerHTML = 'Ulash';
+}
+
+function disconnectGitHub() {
+  if (!confirm('Tokenni shu brauzerdan o\'chirasizmi?')) return;
+  localStorage.removeItem('gh_token');
+  token = '';
+  location.reload();
+}
+
+async function initApp() {
+  document.getElementById('setupCard').classList.add('connected');
+  document.getElementById('setupTitle').textContent = 'GitHub ulangan';
+  document.getElementById('setupSub').style.display = 'none';
+  document.querySelector('.token-row').style.display = 'none';
+  const st = document.getElementById('connStatus');
+  st.style.display = 'block';
+  st.innerHTML = '<span class="status-badge"><span class="status-dot"></span> Ulangan: ' + OWNER + '/' + REPO + '</span>';
+
+  document.getElementById('lockedArea').style.display = 'none';
+  document.getElementById('mainArea').style.display = 'block';
+
+  await loadMenuFromGitHub();
+}
+
+async function loadMenuFromGitHub() {
+  try {
+    const res = await ghFetch(`/contents/index.html?ref=${BRANCH}`);
+    if (!res.ok) throw new Error('index.html topilmadi');
+    const data = await res.json();
+    menuSha = data.sha;
+    const html = decodeURIComponent(escape(atob(data.content.replace(/\n/g,''))));
+
+    const match = html.match(/var MENU=(\[[\s\S]*?\]);/);
+    if (!match) throw new Error('MENU massivi topilmadi');
+
+    // Convert loosely-quoted JS object literal to JSON-parseable
+    let jsonLike = match[1]
+      .replace(/(\w+):/g, '"$1":')
+      .replace(/'/g, '"');
+    MENU = eval(match[1]); // safe here: content is our own generated file
+
+    const waMatch = html.match(/var WA="(\d+)"/);
+    if (waMatch) {
+      waNumber = waMatch[1];
+      document.getElementById('fWaNumber').value = waNumber;
+    }
+
+    renderMenuList();
+    document.getElementById('itemCount').textContent = MENU.length;
+  } catch(e) {
+    showToast('Menu yuklashda xato: ' + e.message, 'error');
+  }
+}
+
+function showTab(tab) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.tab === tab));
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.getElementById('tab-'+tab).classList.add('active');
+}
+
+// IMAGE UPLOAD
+function handleImageUpload(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const img = new Image();
+    img.onload = function() {
+      const canvas = document.createElement('canvas');
+      const maxW = 500, maxH = 375;
+      let w = img.width, h = img.height;
+      if (w > maxW) { h = h * (maxW/w); w = maxW; }
+      if (h > maxH) { w = w * (maxH/h); h = maxH; }
+      canvas.width = w; canvas.height = h;
+      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+      const dataUrl = canvas.toDataURL('image/jpeg', 0.7);
+      const base64 = dataUrl.split(',')[1];
+
+      const ext = 'jpg';
+      const safeName = 'dish_' + Date.now() + '.' + ext;
+      pendingImageFile = { name: safeName, base64: base64, dataUrl: dataUrl };
+
+      const drop = document.getElementById('imgDrop');
+      drop.classList.add('has-img');
+      drop.innerHTML = `
+        <img src="${dataUrl}" class="img-preview">
+        <button class="img-remove" onclick="removeImage(event)">✕</button>
+        <input type="file" id="imgFile" accept="image/*" onchange="handleImageUpload(event)" style="display:none">
+      `;
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+function removeImage(e) {
+  e.stopPropagation();
+  pendingImageFile = null;
+  const drop = document.getElementById('imgDrop');
+  drop.classList.remove('has-img');
+  drop.innerHTML = `
+    <input type="file" id="imgFile" accept="image/*" onchange="handleImageUpload(event)">
+    <div class="img-drop-placeholder" id="imgPlaceholder">
+      <span class="big">📷</span>
+      Rasmni bosing yoki shu yerga tashlang<br>
+      <span class="hint">JPG/PNG, avtomatik siqiladi</span>
+    </div>
+  `;
+}
+
+async function uploadImageToGitHub(filename, base64) {
+  const res = await ghFetch(`/contents/images/${filename}`, {
+    method: 'PUT',
+    body: JSON.stringify({
+      message: `Add dish image: ${filename}`,
+      content: base64,
+      branch: BRANCH
+    })
+  });
+  if (!res.ok) {
+    const err = await res.json();
+    throw new Error(err.message || 'Rasm yuklashda xato');
+  }
+  return GH_RAW + filename;
+}
+
+async function saveItem() {
+  const nameAr = document.getElementById('fNameAr').value.trim();
+  const nameEn = document.getElementById('fNameEn').value.trim();
+  const nameUz = document.getElementById('fNameUz').value.trim();
+  const nameRu = document.getElementById('fNameRu').value.trim();
+
+  if (!nameAr && !nameEn && !nameUz && !nameRu) {
+    showToast('Kamida bitta til uchun nom kiriting', 'error');
+    return;
+  }
+
+  const btn = document.getElementById('saveBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Saqlanmoqda...';
+
+  try {
+    let imgUrl = editingId ? (MENU.find(m=>m.id===editingId)?.img || null) : null;
+
+    if (pendingImageFile) {
+      showToast('Rasm yuklanmoqda...', '');
+      imgUrl = await uploadImageToGitHub(pendingImageFile.name, pendingImageFile.base64);
+    }
+
+    const item = {
+      id: editingId || Date.now(),
+      category: document.getElementById('fCategory').value,
+      emoji: document.getElementById('fEmoji').value || '🍽️',
+      img: imgUrl,
+      price: parseFloat(document.getElementById('fPrice').value) || 0,
+      name: {
+        ar: nameAr || nameEn || nameUz || nameRu,
+        en: nameEn || nameAr || nameUz || nameRu,
+        uz: nameUz || nameEn || nameAr || nameRu,
+        ru: nameRu || nameEn || nameAr || nameUz
+      },
+      desc: {
+        ar: document.getElementById('fDescAr').value,
+        en: document.getElementById('fDescEn').value,
+        uz: document.getElementById('fDescUz').value,
+        ru: document.getElementById('fDescRu').value
+      }
+    };
+
+    if (editingId) {
+      const idx = MENU.findIndex(m => m.id === editingId);
+      if (idx > -1) MENU[idx] = item;
+    } else {
+      MENU.push(item);
+    }
+
+    await saveMenuToGitHub();
+    showToast(editingId ? 'Taom yangilandi! ✅' : 'Taom qo\'shildi! ✅', 'success');
+    clearForm();
+    renderMenuList();
+    document.getElementById('itemCount').textContent = MENU.length;
+  } catch(e) {
+    showToast('Xato: ' + e.message, 'error');
+  }
+  btn.disabled = false;
+  btn.textContent = '✅ Menyuga saqlash';
+}
+
+async function saveMenuToGitHub() {
+  const res = await ghFetch(`/contents/index.html?ref=${BRANCH}`);
+  const data = await res.json();
+  const currentSha = data.sha;
+  const html = decodeURIComponent(escape(atob(data.content.replace(/\n/g,''))));
+
+  const menuStr = 'var MENU=' + JSON.stringify(MENU) + ';';
+  const newHtml = html.replace(/var MENU=\[[\s\S]*?\];/, menuStr);
+
+  const b64Content = btoa(unescape(encodeURIComponent(newHtml)));
+
+  const putRes = await ghFetch('/contents/index.html', {
+    method: 'PUT',
+    body: JSON.stringify({
+      message: 'Update menu via admin panel',
+      content: b64Content,
+      sha: currentSha,
+      branch: BRANCH
+    })
+  });
+  if (!putRes.ok) {
+    const err = await putRes.json();
+    throw new Error(err.message || 'Saqlashda xato');
+  }
+  const result = await putRes.json();
+  menuSha = result.content.sha;
+}
+
+function clearForm() {
+  ['fNameAr','fNameEn','fNameUz','fNameRu','fDescAr','fDescEn','fDescUz','fDescRu','fPrice','fEmoji'].forEach(id => {
+    document.getElementById(id).value = '';
+  });
+  document.getElementById('fCategory').value = 'main';
+  removeImage({stopPropagation:()=>{}});
+  editingId = null;
+  document.getElementById('formTitle').textContent = '🍽️ Yangi taom';
+  document.getElementById('saveBtn').textContent = '✅ Menyuga saqlash';
+  document.getElementById('cancelEditBtn').style.display = 'none';
+}
+
+function cancelEdit() {
+  clearForm();
+}
+
+function editItem(id) {
+  const item = MENU.find(m => m.id === id);
+  if (!item) return;
+  editingId = id;
+  showTab('add');
+
+  document.getElementById('fCategory').value = item.category;
+  document.getElementById('fEmoji').value = item.emoji || '';
+  document.getElementById('fPrice').value = item.price || '';
+  document.getElementById('fNameAr').value = item.name?.ar || '';
+  document.getElementById('fNameEn').value = item.name?.en || '';
+  document.getElementById('fNameUz').value = item.name?.uz || '';
+  document.getElementById('fNameRu').value = item.name?.ru || '';
+  document.getElementById('fDescAr').value = item.desc?.ar || '';
+  document.getElementById('fDescEn').value = item.desc?.en || '';
+  document.getElementById('fDescUz').value = item.desc?.uz || '';
+  document.getElementById('fDescRu').value = item.desc?.ru || '';
+
+  const drop = document.getElementById('imgDrop');
+  if (item.img) {
+    drop.classList.add('has-img');
+    drop.innerHTML = `
+      <img src="${item.img}" class="img-preview">
+      <button class="img-remove" onclick="removeImage(event)">✕</button>
+      <input type="file" id="imgFile" accept="image/*" onchange="handleImageUpload(event)" style="display:none">
+    `;
+  } else {
+    removeImage({stopPropagation:()=>{}});
+  }
+
+  document.getElementById('formTitle').textContent = '✏️ Taomni tahrirlash';
+  document.getElementById('saveBtn').textContent = '💾 O\'zgarishlarni saqlash';
+  document.getElementById('cancelEditBtn').style.display = 'block';
+}
+
+async function deleteItem(id) {
+  if (!confirm('Bu taomni o\'chirasizmi?')) return;
+  MENU = MENU.filter(m => m.id !== id);
+  try {
+    await saveMenuToGitHub();
+    showToast('Taom o\'chirildi', 'success');
+    renderMenuList();
+    document.getElementById('itemCount').textContent = MENU.length;
+  } catch(e) {
+    showToast('Xato: ' + e.message, 'error');
+  }
+}
+
+function renderMenuList() {
+  const list = document.getElementById('menuList');
+  list.innerHTML = '';
+  if (!MENU.length) {
+    list.innerHTML = '<div class="empty-state"><span class="big">📋</span>Hali taom qo\'shilmagan</div>';
+    return;
+  }
+  MENU.forEach(item => {
+    const div = document.createElement('div');
+    div.className = 'menu-item';
+    const catInfo = CATS[item.category] || {uz: item.category, emoji:'🍽️'};
+    div.innerHTML = `
+      ${item.img ? `<img src="${item.img}">` : `<div class="ph">${item.emoji||'🍽️'}</div>`}
+      <div class="mi-info">
+        <div class="mi-name">${item.name?.uz || item.name?.en || 'Nomsiz'}</div>
+        <div class="mi-meta">${catInfo.emoji} ${catInfo.uz}</div>
+      </div>
+      <div class="mi-price">${item.price > 0 ? item.price + ' SAR' : '—'}</div>
+      <div class="mi-actions">
+        <button class="icon-btn" onclick="editItem(${item.id})">✏️</button>
+        <button class="icon-btn danger" onclick="deleteItem(${item.id})">🗑️</button>
+      </div>
+    `;
+    list.appendChild(div);
+  });
+}
+
+async function saveWaNumber() {
+  const num = document.getElementById('fWaNumber').value.trim();
+  if (!num) { showToast('Raqam kiriting', 'error'); return; }
+
+  try {
+    const res = await ghFetch(`/contents/index.html?ref=${BRANCH}`);
+    const data = await res.json();
+    const currentSha = data.sha;
+    const html = decodeURIComponent(escape(atob(data.content.replace(/\n/g,''))));
+
+    const newHtml = html.replace(/var WA="\d+"/, `var WA="${num}"`)
+                          .replace(/value="\d{9,15}"/, `value="${num}"`);
+
+    const b64Content = btoa(unescape(encodeURIComponent(newHtml)));
+
+    const putRes = await ghFetch('/contents/index.html', {
+      method: 'PUT',
+      body: JSON.stringify({
+        message: 'Update WhatsApp number via admin panel',
+        content: b64Content,
+        sha: currentSha,
+        branch: BRANCH
+      })
+    });
+    if (!putRes.ok) {
+      const err = await putRes.json();
+      throw new Error(err.message);
+    }
+    waNumber = num;
+    showToast('WhatsApp raqami yangilandi! ✅', 'success');
+  } catch(e) {
+    showToast('Xato: ' + e.message, 'error');
+  }
+}
+
+function copySiteUrl() {
+  const input = document.getElementById('siteUrl');
+  input.select();
+  document.execCommand('copy');
+  showToast('Nusxalandi!', 'success');
+}
+
+// INIT
+if (token) {
+  initApp();
+} else {
+  document.getElementById('lockedArea').style.display = 'block';
+}
+</script>
+</body>
+</html>
