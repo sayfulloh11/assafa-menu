@@ -118,6 +118,26 @@ body{font-family:'Inter','Noto Naskh Arabic',sans-serif;background:var(--cream);
 [dir=rtl] .section-title::before{content:'';flex:1;height:1px;background:var(--cream2);order:-1;}
 [dir=rtl] .in-cart{left:auto;right:7px;}
 [dir=rtl] .admin-trigger{right:auto;left:14px;}
+
+/* HERO LINKS */
+.hero-links{display:flex;gap:8px;justify-content:center;margin-top:14px;flex-wrap:wrap;}
+.hero-link{display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,.08);border:1px solid rgba(201,150,42,.25);color:rgba(255,255,255,.85);text-decoration:none;padding:6px 12px;border-radius:16px;font-size:11px;font-weight:600;transition:.2s;}
+.hero-link:hover{background:var(--gold);color:var(--dark);}
+.rating-link{background:rgba(240,201,88,.12);border-color:var(--gold-light);color:var(--gold-light);}
+
+/* FOOTER */
+.footer{background:linear-gradient(135deg,var(--dark) 0%,var(--dark2) 100%);color:#fff;padding:24px 16px 20px;margin-top:20px;}
+.footer-title{font-size:14px;font-weight:700;color:var(--gold-light);text-align:center;margin-bottom:14px;}
+.footer-map{border-radius:14px;overflow:hidden;height:160px;margin-bottom:16px;border:1px solid rgba(201,150,42,.25);}
+.footer-map iframe{width:100%;height:100%;border:0;filter:grayscale(20%) contrast(1.05);}
+.footer-info{display:flex;flex-direction:column;gap:8px;margin-bottom:16px;}
+.footer-row{display:flex;align-items:center;gap:8px;font-size:12.5px;color:rgba(255,255,255,.75);}
+.footer-row a{color:rgba(255,255,255,.75);text-decoration:none;}
+.footer-row a:hover{color:var(--gold-light);}
+.footer-icon{font-size:14px;flex-shrink:0;}
+.footer-social{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;}
+.social-btn{display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:#fff;text-decoration:none;padding:8px 14px;border-radius:10px;font-size:11.5px;font-weight:600;transition:.2s;}
+.social-btn:hover{background:var(--gold);color:var(--dark);border-color:var(--gold);}
 </style>
 </head>
 <body>
@@ -145,8 +165,36 @@ body{font-family:'Inter','Noto Naskh Arabic',sans-serif;background:var(--cream);
   <div class="hero-divider"></div>
   <div class="hero-sub" id="heroSub">أطباق أوزبكية وعربية أصيلة</div>
   <div class="madina-badge">📍 <span id="heroLoc">المدينة المنورة</span></div>
+  <div class="hero-links">
+    <a href="https://maps.app.goo.gl/uT75H9p2qWKeUoEx7" target="_blank" class="hero-link rating-link">⭐ <span id="ratingLbl">Google-da ko'ring</span></a>
+    <a href="https://www.instagram.com/assafarestaurant" target="_blank" class="hero-link">📷 Instagram</a>
+    <a href="https://t.me/Assafa_restaurant" target="_blank" class="hero-link">✈️ Telegram</a>
+  </div>
 </div>
 <div id="menuContainer"></div>
+
+<div class="footer">
+  <div class="footer-title" id="footerTitle">📍 Bizni toping</div>
+  <div class="footer-map">
+    <iframe src="https://www.openstreetmap.org/export/embed.html?bbox=39.6070%2C24.5175%2C39.6270%2C24.5325&amp;layer=mapnik&amp;marker=24.5249%2C39.6170" loading="lazy"></iframe>
+  </div>
+  <div class="footer-info">
+    <div class="footer-row">
+      <span class="footer-icon">🕌</span>
+      <span id="footerAddr">Rufaidah Al Ansariah, Al Jamiah, Madinah 42351</span>
+    </div>
+    <div class="footer-row">
+      <span class="footer-icon">📱</span>
+      <a href="https://wa.me/966566867711" target="_blank">WhatsApp: +966 56 686 7711</a>
+    </div>
+  </div>
+  <div class="footer-social">
+    <a href="https://www.instagram.com/assafarestaurant" target="_blank" class="social-btn">📷 Instagram</a>
+    <a href="https://t.me/Assafa_restaurant" target="_blank" class="social-btn">✈️ Telegram</a>
+    <a href="https://maps.app.goo.gl/uT75H9p2qWKeUoEx7" target="_blank" class="social-btn">🗺️ Maps</a>
+  </div>
+</div>
+
 <div class="cart-bar" id="cartBar">
   <div class="cart-summary">
     <span class="cart-count-lbl" id="cartCountLbl"></span>
@@ -259,7 +307,12 @@ var CATS={all:{ar:"الكل",en:"All",uz:"Hammasi",ru:"Все",e:"🍽️"},main
 var MENU=[{id:1,category:"drinks",e:"🍿",img:GH+"lemon_tea.jpg",price:0,name:{ar:"شاي الليمون",en:"Lemon Cinnamon Tea",uz:"Limon choy",ru:"Чай с лимоном"},desc:{ar:"شاي بالليمون والقرفة",en:"Herbal tea with lemon & cinnamon",uz:"Limon va dalchil bilan choy",ru:"Чай с лимоном и корицей"}},{id:2,category:"main",e:"🍗",img:GH+"crispy_chicken.jpg",price:0,name:{ar:"دجاج كريسبي",en:"Crispy Chicken & Fries",uz:"Krispy tovuq va fri",ru:"Хрустящая курица"},desc:{ar:"دجاج مقرمش مع بطاطس",en:"Crispy fried chicken with fries & sauce",uz:"Qovurilgan tovuq, fri va sous",ru:"Хрустящая курица с фри"}},{id:3,category:"desserts",e:"🍰",img:GH+"chocolate_cake.jpg",price:0,name:{ar:"كيكة الشوكولاتة",en:"Chocolate Nut Cake",uz:"Shokoladli tort",ru:"Шоколадный торт"},desc:{ar:"كيكة شوكولاتة بالمكسرات",en:"Layered chocolate cake with nuts",uz:"Ko'p qavatli shokoladli tort",ru:"Многослойный торт с орехами"}},{id:4,category:"drinks",e:"🍿",img:GH+"strawberry_tea.jpg",price:0,name:{ar:"شاي الفراولة",en:"Strawberry Mint Tea",uz:"Qulupnayli choy",ru:"Чай с клубникой"},desc:{ar:"شاي الفراولة مع النعناع",en:"Fresh strawberry tea with mint",uz:"Yangi qulupnay va nana bilan",ru:"Свежий чай с клубникой"}},{id:5,category:"main",e:"🍗",img:GH+"grilled_wings.jpg",price:0,name:{ar:"أجنحة دجاج مشوية",en:"Grilled Chicken Wings",uz:"Grillda tovuq qanotlari",ru:"Куриные крылья гриль"},desc:{ar:"أجنحة مشوية مع البصل",en:"Grilled wings with onion & sauce",uz:"Piyoz va sous bilan grillda qanotlar",ru:"Крылья грилль с луком"}},{id:6,category:"main",e:"🍓",img:GH+"spicy_rice.jpg",price:0,name:{ar:"دجاج حار مع الأرز",en:"Spicy Chicken with Rice",uz:"Achchiq tovuq guruch bilan",ru:"Острая курица с рисом"},desc:{ar:"دجاج حار بالفلف والسمسم",en:"Spicy chicken with peppers & rice",uz:"Qalampir va sezam bilan tovuq",ru:"Острая курица с перцем"}},{id:7,category:"main",e:"🍗",img:GH+"spicy_fries.jpg",price:0,name:{ar:"دجاج حار مع بطاطس",en:"Spicy Chicken & Fries",uz:"Achchiq tovuq va fri",ru:"Острая курица с фри"},desc:{ar:"دجاج حار مقرمش مع بطاطس",en:"Crispy spicy chicken with fries",uz:"Krispy achchiq tovuq va fri",ru:"Хрустящая острая курица"}},{id:8,category:"main",e:"🍚",img:GH+"plov.jpg",price:0,name:{ar:"بلو اوزبكي",en:"Uzbek Plov",uz:"O'zbek oshi",ru:"Узбекский плов"},desc:{ar:"أرز بالجزر واللحم والحمص",en:"Uzbek rice with meat & chickpea",uz:"Go'sht, sabzi va no'xat bilan",ru:"Плов с мясом и нутом"}},{id:9,category:"main",e:"🥩",img:GH+"lula_kebab.jpg",price:0,name:{ar:"لولا كباب",en:"Lula Kebab",uz:"Lula kabob",ru:"Люля-кебаб"},desc:{ar:"كباب اللحم المفروم",en:"Grilled minced meat kebab",uz:"Qiyma kabob piyoz bilan",ru:"Жареный люля-кебаб"}},{id:10,category:"main",e:"🤏",img:GH+"manti.jpg",price:0,name:{ar:"مانتي أوزبكية",en:"Uzbek Manti",uz:"Manti",ru:"Манты"},desc:{ar:"زلابية بالبخار محشوة باللحم",en:"Steamed Uzbek dumplings",uz:"Go'shtli o'zbek mantisi",ru:"Узбекские манты с мясом"}},{id:11,category:"soups",e:"🍂",img:GH+"shorva.jpg",price:0,name:{ar:"شوربة اللحم",en:"Meat Soup (Shorva)",uz:"Go'shtli sho'rva",ru:"Мясной суп"},desc:{ar:"شوربة لحم بالخضروات",en:"Traditional Uzbek meat soup",uz:"Sabzavotlar bilan sho'rva",ru:"Традиционная шурпа"}}];
 var lang="ar",cat="all",cart={},nid=20,wa=WA,eid=null,pay=null;
 function init(){cats();menu();uCart();}
-function setLang(l){lang=l;document.documentElement.lang=l;document.documentElement.dir=l==="ar"?"rtl":"ltr";document.querySelectorAll(".lang-btn").forEach(function(b){b.classList.toggle("active",b.textContent===l.toUpperCase());});var t=T[l];document.getElementById("heroTitle").textContent=t.h1;document.getElementById("heroSub").textContent=t.h2;document.getElementById("heroLoc").textContent=t.h3;document.getElementById("viewOrderLbl").textContent=t.vo;cats();menu();uCart();}
+function setLang(l){lang=l;document.documentElement.lang=l;document.documentElement.dir=l==="ar"?"rtl":"ltr";document.querySelectorAll(".lang-btn").forEach(function(b){b.classList.toggle("active",b.textContent===l.toUpperCase());});var t=T[l];document.getElementById("heroTitle").textContent=t.h1;document.getElementById("heroSub").textContent=t.h2;document.getElementById("heroLoc").textContent=t.h3;document.getElementById("viewOrderLbl").textContent=t.vo;
+var ratingMap={ar:"شاهد على جوجل",en:"See on Google",uz:"Google\'da ko\'ring",ru:"Смотреть в Google"};
+var footerMap={ar:"📍 اعثر علينا",en:"📍 Find Us",uz:"📍 Bizni toping",ru:"📍 Как нас найти"};
+var rl=document.getElementById("ratingLbl"); if(rl) rl.textContent=ratingMap[l];
+var ft=document.getElementById("footerTitle"); if(ft) ft.textContent=footerMap[l];
+cats();menu();uCart();}
 function cats(){var bar=document.getElementById("catsBar");bar.innerHTML="";Object.keys(CATS).forEach(function(k){var b=document.createElement("button");b.className="cat-btn"+(cat===k?" active":"");b.textContent=CATS[k].e+" "+CATS[k][lang];b.onclick=function(){cat=k;cats();menu();};bar.appendChild(b);});}
 function menu(){var c=document.getElementById("menuContainer");c.innerHTML="";var f=cat==="all"?MENU:MENU.filter(function(i){return i.category===cat;});var g={};f.forEach(function(i){if(!g[i.category])g[i.category]=[];g[i.category].push(i);});Object.keys(g).forEach(function(k){var s=document.createElement("div");s.className="section";var tt=document.createElement("div");tt.className="section-title";tt.textContent=CATS[k].e+" "+CATS[k][lang];s.appendChild(tt);var gr=document.createElement("div");gr.className="menu-grid";g[k].forEach(function(item){var q=cart[item.id]||0;var card=document.createElement("div");card.className="card";var ind=document.createElement("div");ind.className="in-cart";ind.id="ind-"+item.id;ind.textContent="x"+q;ind.style.display=q>0?"block":"none";card.appendChild(ind);var img=document.createElement("img");img.className="card-img";img.src=item.img||"";img.alt=item.name[lang];img.onerror=function(){img.style.display="none";};card.appendChild(img);var body=document.createElement("div");body.className="card-body";var pr=item.price>0?item.price+' <small>'+T[lang].sar+'</small>':'<small style="color:var(--text-soft)">-- '+T[lang].sar+'</small>';body.innerHTML='<div class="card-name">'+item.name[lang]+'</div><div class="card-desc">'+item.desc[lang]+'</div><div class="card-footer"><div class="card-price">'+pr+'</div><button class="add-btn" onclick="addToCart('+item.id+')">+</button></div>';card.appendChild(body);gr.appendChild(card);});s.appendChild(gr);c.appendChild(s);});}
 function addToCart(id){cart[id]=(cart[id]||0)+1;uCart();var ind=document.getElementById("ind-"+id);if(ind){ind.textContent="x"+cart[id];ind.style.display="block";}}
