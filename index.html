@@ -330,7 +330,7 @@ body{font-family:'Inter',sans-serif;background:var(--sand);color:var(--text);min
 <div class="header">
   <div class="header-top">
     <div class="logo-block">
-      <div class="logo-icon">&#127869;&#65039;</div>
+      <div class="logo-icon" onclick="tryOpenAdmin()" style="cursor:pointer">&#127869;&#65039;</div>
       <div class="logo-text">
         <div class="name-ar">&#1605;&#1591;&#1593;&#1605; &#1575;&#1604;&#1589;&#1601;&#1575; &#1591;&#1575;&#1576;&#1577;</div>
         <div class="name-en">AsSafa &middot; Madinah</div>
@@ -402,7 +402,7 @@ body{font-family:'Inter',sans-serif;background:var(--sand);color:var(--text);min
   </div>
 </div>
 
-<button class="admin-trigger" id="adminTrigger" onclick="openAdmin()">&#9881;&#65039;</button>
+
 
 <div class="modal-overlay" id="cartOverlay" onclick="if(event.target===this)closeCartModal()">
   <div class="modal">
@@ -797,7 +797,7 @@ function uCart(){
   document.getElementById("cartCountLbl").textContent=t.it(cn);
   document.getElementById("cartTotalLbl").textContent=tt>0?tt+" "+t.sar:"";
   document.getElementById("viewOrderLbl").textContent=t.vo;
-  document.getElementById("adminTrigger").classList.toggle("has-cart",cn>0);
+  var at=document.getElementById("adminTrigger"); if(at) at.classList.toggle("has-cart",cn>0);
 }
 
 function openCartModal(){
@@ -894,6 +894,21 @@ function confirmPaymentAndSend(){
   var finalMsg=msg+orderTypeLine;
   closePayModal();
   window.open("https://wa.me/"+wa+"?text="+encodeURIComponent(finalMsg),"_blank");
+}
+
+var ADMIN_PW="assafa2026";
+var adminUnlocked=false;
+
+function tryOpenAdmin(){
+  if(adminUnlocked){openAdmin();return;}
+  var pw=prompt("Admin parolini kiriting / Enter admin password:");
+  if(pw===null)return;
+  if(pw===ADMIN_PW){
+    adminUnlocked=true;
+    openAdmin();
+  }else{
+    alert("Noto'g'ri parol / Wrong password");
+  }
 }
 
 function openAdmin(){
